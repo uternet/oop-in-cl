@@ -2,7 +2,7 @@
 
 * [CLOS模型简介](01-intro.md)
 * [CLOS程序的元素](02-clos-elts.md)
-  * [类和实例](#21-类和实例)
+  * [类和实例](02-clos-elts.md#21-类和实例)
 * [开发一个简单的CLOS程序：锁](03-lock.md)
 * [方法编程](04-method.md)
 * [控制泛型调度](05-generic-dispatch.md)
