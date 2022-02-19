@@ -8,6 +8,7 @@
 
 外部接口由 Common LISP: The Language 指定，在以下章节中：
 
+| | |
 | ------------ | ------------------------- |
 | Chapter 21   | Streams                   |
 | Section 22.2 | Input Functions           |
