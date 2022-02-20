@@ -74,7 +74,7 @@
   (:documentation "The foundation of all locks."))
 ```
 
-对这个表单求值将会创建一个名为 `lock` 的新类，其中有一个名为 `name` 的槽。它还创建了泛型函数 `lock-name`，以及方法 `lock-name`，该方法允许您读取任何类型为 `lock` 的对象的 `name` 槽的值。接下来，我们检视类定义的每一部分，看看它做了什么:
+对这个表达式求值将会创建一个名为 `lock` 的新类，其中有一个名为 `name` 的槽。它还创建了泛型函数 `lock-name`，以及方法 `lock-name`，该方法允许您读取任何类型为 `lock` 的对象的 `name` 槽的值。接下来，我们检视类定义的每一部分，看看它做了什么:
 
 `defclass` 
 
@@ -146,7 +146,7 @@
 
     (lock-owner lock-object)
 	
-写入器的泛型函数名字是 `(setf lock-owner)`。这个列表不是一个可以求值的表单;它是函数的名字——换句话说，它是“函数说明符”。要调用 writer，应该使用下面的`setf`语法:
+写入器的泛型函数名字是 `(setf lock-owner)`。这个列表不是一个可以求值的表达式;它是函数的名字——换句话说，它是“函数说明符”。要调用 writer，应该使用下面的`setf`语法:
 
     (setf (lock-owner lock-object) new-value)
 	
@@ -283,7 +283,7 @@ for the argument #<NULL-LOCK 802335>
 
 **使用defgeneric来文档化接口**
 
-我们可以使用`defgeneric` 表单来文档化每一个泛型函数的接口。该接口包含了三个概念，每一个概念都以`defgeneric`表单表示:
+我们可以使用`defgeneric` 表达式来文档化每一个泛型函数的接口。该接口包含了三个概念，每一个概念都以`defgeneric`表达式表示:
 
 | 接口        | defgeneric 的描述     |
 | ---        | ---                  |
@@ -291,9 +291,9 @@ for the argument #<NULL-LOCK 802335>
 | 它能做什么   | 文档字符串            |
 | 它的返回值   | 文档字符串            |
 
-您可以使用`defgeneric`来文档化泛型函数，以便程序员调用它或为它定义额外的方法。`defgeneric`表单还为泛型函数设置了准则，以后对程序进行扩展时必须遵循这些准则。
+您可以使用`defgeneric`来文档化泛型函数，以便程序员调用它或为它定义额外的方法。`defgeneric`表达式还为泛型函数设置了准则，以后对程序进行扩展时必须遵循这些准则。
 
-`defgeneric`表单将泛型函数描述为一个整体。`seize`和`release`的`defgeneric`表单在文档字符串中提供了英文文本，描述了泛型函数的总体目的。文档字符串不是程序的功能性部分;它实际上什么都不做。但是，如果没有这些文档，想要阅读代码并了解程序如何工作的人就必须查看方法的定义，并试图根据方法集来辨别泛型函数的总体目的。
+`defgeneric`表达式将泛型函数描述为一个整体。`seize`和`release`的`defgeneric`表达式在文档字符串中提供了英文文本，描述了泛型函数的总体目的。文档字符串不是程序的功能性部分;它实际上什么都不做。但是，如果没有这些文档，想要阅读代码并了解程序如何工作的人就必须查看方法的定义，并试图根据方法集来辨别泛型函数的总体目的。
 
 ```lisp
 (defgeneric seize (lock)
@@ -312,19 +312,19 @@ if unsuccessful and failure-mode is :error, signals an error.
 The default for failure-mode is :no-error."))
 ```
 
-在 Lisp 中，lambda-list 是函数的一部分，用于指定函数参数的名字。用于`seize`的`defgeneric`表单指定一个必需参数（其名字为`lock`），用于`release`的`defgeneric`表单指定了一个名为`lock`的必需参数和一个名为`failure-mode`的可选参数。
+在 Lisp 中，lambda-list 是函数的一部分，用于指定函数参数的名字。用于`seize`的`defgeneric`表达式指定一个必需参数（其名字为`lock`），用于`release`的`defgeneric`表达式指定了一个名为`lock`的必需参数和一个名为`failure-mode`的可选参数。
 
 如图所示，文档字符串看起来有些笨拙，但将它们靠左对齐是有原因的。如果我们缩进它们，`documentation`函数也会以缩进的方式显示它们，这不是我们想要的。没有必要将文档字符串的第一行靠左对齐，但是对于第一行之后的字符串，我们选择这种样式，只是为了与后面的行保持一致。
 
 **创建一个泛型函数**
 
-`defgeneric` 表单创建一个新的泛型函数。使用`defgeneric`并不是定义泛型函数的唯一方式。另一种方式是 直接定义方法。如果为泛型函数定义了一个方法，而该泛型函数本身还不存在，那么CLOS将会自动创建它。泛型函数的 lambda-list 是由该方法的 lambda-list 导出的。稍后你可以使用`defgeneric`来指定泛型函数的 lambda-list、文档字符串和其他任何选项;CLOS根据新的定义修改现有的泛型函数。
+`defgeneric` 表达式创建一个新的泛型函数。使用`defgeneric`并不是定义泛型函数的唯一方式。另一种方式是 直接定义方法。如果为泛型函数定义了一个方法，而该泛型函数本身还不存在，那么CLOS将会自动创建它。泛型函数的 lambda-list 是由该方法的 lambda-list 导出的。稍后你可以使用`defgeneric`来指定泛型函数的 lambda-list、文档字符串和其他任何选项;CLOS根据新的定义修改现有的泛型函数。
 
 虽然通过`defgeneric`显式地文档化接口不是必需的，但这样做通常会使其他人更容易了解你的程序是如何工作的，并为希望扩展程序的程序员提供指导。
 
 **参数模式的建立**
 
-`defgeneric`表单建立了一个参数模式，该模式必须由该泛型函数的所有方法遵循。因此，`defgeneric` 表单的lambda-list 是程序的一个功能部分。CLOS要求所有方法的 lambda-list 和泛型函数的 `defgeneric` 表单具有相同的“形状”或“完全相等”。lambda-list 必须具有相同数量的必需参数和相同数量的可选参数。关键字参数 &key 的一致性的特殊的规则。完整的细节，见[lambda-list的一致性](#72-lambda-list的一致性)。
+`defgeneric`表达式建立了一个参数模式，该模式必须由该泛型函数的所有方法遵循。因此，`defgeneric` 表达式的lambda-list 是程序的一个功能部分。CLOS要求所有方法的 lambda-list 和泛型函数的 `defgeneric` 表达式具有相同的“形状”或“完全相等”。lambda-list 必须具有相同数量的必需参数和相同数量的可选参数。关键字参数 &key 的一致性的特殊的规则。完整的细节，见[lambda-list的一致性](#72-lambda-list的一致性)。
 
 **命名问题**
 
@@ -334,13 +334,13 @@ The default for failure-mode is :no-error."))
 
 **锁协议**
 
-泛型函数定义单个操作的接口。在设计阶段，这是一个有价值的概念，因为它帮助您将重点放在接口上，而将实现的细节留到后面。在程序维护期间，它也是有价值的。程序开始时出现的一组 `defgeneric` 表单可以用来记录程序各个部分的角色。
+泛型函数定义单个操作的接口。在设计阶段，这是一个有价值的概念，因为它帮助您将重点放在接口上，而将实现的细节留到后面。在程序维护期间，它也是有价值的。程序开始时出现的一组 `defgeneric` 表达式可以用来记录程序各个部分的角色。
 
 泛型函数组合在一起可以称之为协议。协议包含了程序中对象的完整行为。例如，锁协议的基础如下:
 
 > 必须有创建新锁的方法，而且所有现有锁都必须支持捕获和释放操作。
 
-锁协议必须传递关于每个操作的语义的更多信息:参数、操作内容和返回值。对于泛型函数，此信息包含在各个`defgeneric`表单中。
+锁协议必须传递关于每个操作的语义的更多信息:参数、操作内容和返回值。对于泛型函数，此信息包含在各个`defgeneric`表达式中。
 
 协议的思想为我们提供了另一种应用程序的视角。“什么是锁?”这个问题可以用“锁是遵守锁协议的对象”来回答。现在我们有了锁的操作定义。这种观点允许对空锁进行自然而准确的描述:“空锁遵守锁协议，实际上并不保护任何东西不受同步访问的影响。”请注意，根据这个定义，基础类`lock`的实例并不是锁，因为它不遵守锁协议。
 
@@ -352,7 +352,7 @@ The default for failure-mode is :no-error."))
 
 在本节中，我们将为空锁和简单锁定义方法。我们将详细讨论方法，包括何时调用方法、它接收什么参数以及方法如何为参数提供默认值。在整个讨论中，请记住 argument （实参）和 parameter （形参）这两个术语之间的区别。您在调用 Lisp 函数时向它提供 argument (实参)，并在定义函数时为函数的参数(形参)命名。在函数体中，可以使用相应的形参来引用实参。因此，形参是在函数执行期间绑定到实参的变量。关于不同类型参数的详细信息，请参阅 Steele 的 COMMON LISP: the Language，第59-61页。
 
-泛型函数和方法使用相同的术语。`defgeneric`表单的 lambda-list 命名了泛型函数的参数，`defmethod`表单的lambda-list 命名了方法的参数。
+泛型函数和方法使用相同的术语。`defgeneric`表达式的 lambda-list 命名了泛型函数的参数，`defmethod`表达式的lambda-list 命名了方法的参数。
 
 **空锁的方法**
 
@@ -452,7 +452,7 @@ The default for failure-mode is :no-error."))
     (error "Can't seize ~A because you already own it." l)))
 ```
 
-下面的 `seize` 方法使用了 `do` 迭代，直到 `setf-if` 成功。在每一次迭代中，`setf-if` 通过使用 `lock-owner` 来确定锁的 `owner` 槽是否为 `nil` 来确定锁是否是空闲的。如果锁是空闲的，`setf-if` 将其所有者设置为当前进程，从而捕获它。(这是由`setf-if`自动完成的。)如果锁第一次没有释放，则调用`process-wait`来等待，直到 `lock-owner` 返回`nil`，这表示锁当前是空闲的。然后`setf-if`表单再次尝试。
+下面的 `seize` 方法使用了 `do` 迭代，直到 `setf-if` 成功。在每一次迭代中，`setf-if` 通过使用 `lock-owner` 来确定锁的 `owner` 槽是否为 `nil` 来确定锁是否是空闲的。如果锁是空闲的，`setf-if` 将其所有者设置为当前进程，从而捕获它。(这是由`setf-if`自动完成的。)如果锁第一次没有释放，则调用`process-wait`来等待，直到 `lock-owner` 返回`nil`，这表示锁当前是空闲的。然后`setf-if`表达式再次尝试。
 
 ```lisp
 (defmethod seize ((l simple-lock))
@@ -479,7 +479,7 @@ The default for failure-mode is :no-error."))
 
 **方法的默认可选参数**
 
-`simple-lock`的`release`方法的 lambda-list 为可选参数`failure-mode`提供了一个默认值。方法的 lambda-list 可以为任何可选参数提供默认值，但不能为必需参数提供默认值。`defgeneric`表单不能为其`lambda-list`中的任何参数提供默认值。
+`simple-lock`的`release`方法的 lambda-list 为可选参数`failure-mode`提供了一个默认值。方法的 lambda-list 可以为任何可选参数提供默认值，但不能为必需参数提供默认值。`defgeneric`表达式不能为其`lambda-list`中的任何参数提供默认值。
 
 ## 3.6 专门化锁的行为
 
@@ -766,7 +766,7 @@ but does check that the lock ordering is obeyed."))
 > **类的优先规则2**
 > 每个类的定义设置了它的直接超类的优先顺序。
 
-在`defclass`表单中，直接超类的顺序声明了它们的相对优先级。例如，`ordered-lock` 的类定义包括两个直接超类:`ordered-lock-mixin`和`simple-lock`。因为`ordered-lock-mixin`在列表中首先(最左边)出现，所以它比`simple-lock`更匹配。
+在`defclass`表达式中，直接超类的顺序声明了它们的相对优先级。例如，`ordered-lock` 的类定义包括两个直接超类:`ordered-lock-mixin`和`simple-lock`。因为`ordered-lock-mixin`在列表中首先(最左边)出现，所以它比`simple-lock`更匹配。
 
 当我们考虑到这两条规则时，我们可以确定这两个聚合类的类优先级列表。`ordered-lock`的类优先列表为:
 

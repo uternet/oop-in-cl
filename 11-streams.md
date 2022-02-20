@@ -57,7 +57,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 **创建和使用流**
 
-创建流的一种方法是打开文件。函数`open`返回一个连接到指定文件的流。`open`的参数控制流的类型。例如，要创建一个字符输出流(用于将字符传输到文件)，你可以使用适当的`filename`参数来求值这个表单:
+创建流的一种方法是打开文件。函数`open`返回一个连接到指定文件的流。`open`的参数控制流的类型。例如，要创建一个字符输出流(用于将字符传输到文件)，你可以使用适当的`filename`参数来求值这个表达式:
 
     (open filename :direction :output :element-type 'character)
     
@@ -175,7 +175,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
           'clos-streams)
 ```
 
-您将注意到，我们通过几个`defgeneric`形式声明泛型函数的返回值。这是记录泛型函数的部分契约(预期返回值)的一种方便的方法。尽管 Common Lisp 没有将`values`指定为可识别的声明说明符，但我们可以通过如下方式将`values`声明为一个说明符:
+您将注意到，我们通过几个`defgeneric`表达式声明泛型函数的返回值。这是记录泛型函数的部分契约(预期返回值)的一种方便的方法。尽管 Common Lisp 没有将`values`指定为可识别的声明说明符，但我们可以通过如下方式将`values`声明为一个说明符:
 
     (proclaim '(declaration values))
     
@@ -896,7 +896,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 **字符流的亮点**
 
-字符流处理字符元素类型。 泛型函数 `bytes-per-element` 和 `stream-element-type` 存储有关字符元素结构的信息。 由于这两个都是常量，我们选择将它们存储在具有读取器方法的类槽中。 或者，我们可以将信息存储在 `defmethod` 形式中，其中方法只返回常量。
+字符流处理字符元素类型。 泛型函数 `bytes-per-element` 和 `stream-element-type` 存储有关字符元素结构的信息。 由于这两个都是常量，我们选择将它们存储在具有读取器方法的类槽中。 或者，我们可以将信息存储在 `defmethod` 表达式中，其中方法只返回常量。
 
 字符流类假定每个字符都适合单个字节。 一些实现支持需要多于一个字节存储的字符。 我们的模型可以扩展到包括基于字符流的类； 这样的类可以提供一个名为 `bytes-per-element` 的类槽来覆盖由`character-stream`类定义的类槽。
 

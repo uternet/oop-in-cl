@@ -47,7 +47,7 @@ CLOS在几种情况下初始化实例：当第一次使用 `make-instance` 创�
 
 ## 10.3 用initforms填充未绑定的槽
 
-对于这两个更新函数，对于添加的本地槽，使用初始化表单填充未绑定槽的阶段已经完成。对于`initialize-instance`，这个阶段是对所有槽执行的;对于`reinitialize-instance`，它不会对任何槽执行。
+对于这两个更新函数，对于添加的本地槽，使用初始化表达式填充未绑定槽的阶段已经完成。对于`initialize-instance`，这个阶段是对所有槽执行的;对于`reinitialize-instance`，它不会对任何槽执行。
 
 泛型函数 `shared-initialize` 接受一个称为 `slot-for-initform` 的必需参数，指示哪些槽要用它们的 initform 填充。此参数是槽名字的列表，或 `t` 表示所有槽，或 `nil` 表示没有槽。下表显示了调用者（四个泛型函数的默认方法）如何提供 slot-for-initform 参数： 
 
