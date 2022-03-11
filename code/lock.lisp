@@ -93,3 +93,16 @@ The default for failure-mode is :no-error."))
         (:no-error nil)
         (:error (error "~A is not owned by this process" l)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod print-object ((l lock) stream)
+  (format stream "#<~S ~A ~D>"
+          (type-of l)
+          (if (slot-boundp l 'name)
+              (lock-name l)
+            "(no name)")
+          #+genera (sys:%pointer l)
+          #+sbcl (sb-kernel:get-lisp-obj-address l)
+          #+clisp (system::address-of l))
+  l)
+

@@ -47,7 +47,7 @@
   (:documentation "Foundation of all windows."))
 ```
 
-**使用槽选项 :initarg**
+### 使用槽选项 :initarg
 
 在`window`类的定义中，四个槽（x、y、height 和 width）使用了 `:initarg` 选项。将四个符号声明为`window`类有效的初始化参数名字。例如，符号 `:x-position` 是一个初始化参数的名字。如果您将其传递给 `make-instance` ，后面跟一个值，则该值将存储在 `x` 槽中。类似地，符号 `:height` 也是一个初始化参数，可用于初始化名为 `height` 的槽。
 
@@ -61,11 +61,11 @@
 
 请注意，名为`exposed-p` 的槽不使用 `:initarg` 选项。因此，您不能通过为 `make-instance` 传递参数来初始化该槽。并不打算让用户初始化`exposed-p`槽。
 
-**使用槽选项 :initform**
+### 使用槽选项 :initform
 
 名为`exposed-p` 的槽使用`:initform` 槽选项将默认初始值与槽相关联，该初始值为`nil`。这个槽的语义很简单：当你第一次创建一个窗口时，它是不可见的。我们故意不提供初始化参数，因为我们希望所有新创建的窗口都不可见； 这种方法会导致槽自动初始化为其 `initform`（即 `nil`），有效地预先阻止用户初始化 `exposed-p`槽。
 
-**使用类选项 :default-initargs**
+### 使用类选项 :default-initargs
 
 有时，为类提供默认的初始值很有用。`:default-initargs` 类选项执行此操作。它主要用于远程默认； 也就是说，为继承的初始化参数提供默认值。
 
@@ -84,7 +84,7 @@
 
 这个类可以单独使用，也可以作为其他类的构建块。它与 `window` 具有相同的槽，但它提供了四个initargs的默认值，以方便需要制作全屏窗口的客户端。
 
-**两种默认值**
+### 两种默认值
 
 记住 `:default-initargs` 和 `:initform` 之间的区别很重要。`:default-initargs` 选项为initarg提供默认值，而 `:initform` 选项为槽提供默认值。
 
@@ -106,7 +106,7 @@
 
 调用 `make-instance` 时，它会创建一个实例并调用 `initialize-instance` 泛型函数来初始化新实例。CLOS为 `initialize-instance` 提供了一个默认的 primary 方法，它根据它们的 `initargs` 和 `initforms` 用值来填充槽。您可以通过编写一个用于 `initialize-instance` 的方法来自定义实例的初始化来做额外的工作。
 
-**为`initialize-instance`定义after方法**
+### 为`initialize-instance`定义after方法
 
 一个窗口系统可能需要跟踪所有窗口。在这里，我们将新窗口添加到跟踪已显示窗口的数据结构中去。
 
@@ -119,7 +119,7 @@
 
 由于 `initialize-instance` 的方法接收所有默认的 `initargs` 作为参数，因此 `initialize-instance` 的方法应该在它们的 lambda-list 中使用 `&key`。在这里使用 `&key` 的结果是该方法允许使用关键字而不指定它使用任何关键字参数。有关方法的 lambda-lists 的更多详细信息，请参阅第 132 页的[Congruent Lambda-Lists]()。
 
-**`initialize-instance的默认方法**
+### `initialize-instance的默认方法
 
 `make-instance` 使用实例和默认的 `initarg` 列表调用 `initialize-instance`。使用这些参数，`initialize-instance` 的默认方法用值填充槽，如下所示： 
 
@@ -137,7 +137,7 @@
 
 本节更详细地描述 initargs，重点介绍如何使用它们来初始化新实例。initargs 也用于其他情况； 请参见[通过initargs执行初始化]()，第 168 页。
 
-**初始化参数名字的有效性**
+### 初始化参数名字的有效性
 
 在调用 `make-instance` 之前，必须将initarg名字声明为对给定类有效。有两种方法可以声明initarg名字有效：
 
@@ -153,7 +153,7 @@
 
 如果初始化方法的 lambda-list 使用 `&allow-other-keys`，则所有可能的符号都被声明为有效的 initargs。换句话说，初始化方法中的 `&allow-other-keys` 禁用了对initarg名字的错误检查。
 
-**initarg和槽名字的分离**
+### initarg和槽名字的分离
 
 当您使用 `:initarg` 槽选项时，initarg 的名字独立于槽的名字。这种独立性允许一定程度的抽象； 客户端不能假设initarg直接映射到同名的槽。事实上，一些initargs可能根本不映射到一个槽，并且一些 槽可能填充了基于几个initargs计算的值。
 
