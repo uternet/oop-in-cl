@@ -935,7 +935,7 @@ If valid, does nothing and allows primary method to run."
 这里我们创建打印请求队列并定义了构造函数`make-print-queue`。构造函数不接受任何参数，因此这两个槽被初始化为它们的默认初始值。`lock`槽用一个名为“Print Queue”的简单锁初始化，请求槽初始化为空列表。
 
 ```lisp
-    (defvar *print-queue* (make-request-queue))
+    (defvar *print-queue* (make-print-queue))
 ```
 	
 下面的函数用于修改队列, 负责捕获锁、修改数据结构和释放锁。`unwind-protect`确保即使操作中止，锁也会被释放。
@@ -957,8 +957,8 @@ If valid, does nothing and allows primary method to run."
     (unwind-protect
          (progn
            (seize lock)
-           (delete r (print-requests *print-queue*))))
-    (release lock :no-error)))
+           (delete r (print-requests *print-queue*)))
+      (release lock :no-error))))
 ```
 
 (注：上面的 `enqueue-print-request` 和 `dequeue-print-request` 分别模拟了提出打印请求的客户端应用以及处理打印请求的打印管理程序。前者模拟将自己的打印请求放入队列，而后者模拟处理打印请求，然后将它从队列中删除。不论是入队还是出队，都需要先捕获锁，才能继续操作。)
