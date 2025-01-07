@@ -360,7 +360,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 + `bidirectional-stream`类从它的超类`input-stream`,`output-stream`,`stream`继承了所有方法。`input-stream`提供的`input-stream-p`方法覆盖了由`stream`提供的默认方法，因此，一个`bidirectional-stream`流也被定义为输入流。与此类似，`bidirectional-stream`也被定义为输出流。
 
-有时不可能将函数实现为泛型函数。 例如，Common Lisp 指定 `force-output` 的参数`stream`是可选的。 在 CLOS 中，方法不能专门化可选参数。 由于我们想要选择方法的`stream`参数，我们将 `force-output` 定义为一个普通函数，它处理它的参数，然后调用 `force-output-internal` 来完成它的工作。 我们将 `force-output-internal` 定义为需要流参数的泛型函数。 我们对`finish-output`做同样的事情。
+有时不可能将函数实现为泛型函数。 例如，Common Lisp 指定 `force-output` 的参数`stream`是可选的。 在 CLOS 中，方法不能特化可选参数。 由于我们想要选择方法的`stream`参数，我们将 `force-output` 定义为一个普通函数，它处理它的参数，然后调用 `force-output-internal` 来完成它的工作。 我们将 `force-output-internal` 定义为需要流参数的泛型函数。 我们对`finish-output`做同样的事情。
 
 我们将 `ensure-open-stream` 和 `make-element-array` 实现为普通的 Lisp 函数。 我们预计不同类型的流不需要针对这些操作的特殊行为。 流协议可以按照普通函数和泛型函数来实现。
 
@@ -1114,7 +1114,7 @@ Common Lisp 指定字符流支持 `read-char` 和 `write-char` 函数。 （Comm
 - 通过 `select-stream-class`选择类
 - 使用 `make-device-stream` 创建一个实例
 
-我们指定 `make-stream` 调用 `select-stream-class` 以根据所需的方向、元素类型和设备选择适当的类。 从方向、元素类型和设备集合到流类的关联是通过调用 `add-stream-class` 来建立的。 在这个设计中，`select-stream-class` 和 `add-stream-class` 都是普通函数，程序员不打算专门化它们。 相反，我们希望程序员为每个可实例化的类调用 `add-stream-class`，以将流类与正确的方向、元素类型和设备相关联。 我们记录 `select-stream-class` 和 `add-stream-class` 如下：
+我们指定 `make-stream` 调用 `select-stream-class` 以根据所需的方向、元素类型和设备选择适当的类。 从方向、元素类型和设备集合到流类的关联是通过调用 `add-stream-class` 来建立的。 在这个设计中，`select-stream-class` 和 `add-stream-class` 都是普通函数，程序员不打算特化它们。 相反，我们希望程序员为每个可实例化的类调用 `add-stream-class`，以将流类与正确的方向、元素类型和设备相关联。 我们记录 `select-stream-class` 和 `add-stream-class` 如下：
 
 + `add-stream-class` *direction element-type device-type class*<br>设置从前三个参数到类的关联。 此关联由 `select-stream-class` 使用。 方向是关键字参数； `element-type` 是类型说明符； 设备类型是一个符号。
 
@@ -1161,7 +1161,7 @@ Common Lisp 指定字符流支持 `read-char` 和 `write-char` 函数。 （Comm
 
 `make-device-stream` 的工作是使用正确的设备参数调用 `make-instance`。 我们期望程序员为任何新的实例化设备类型专门制作设备流。 在这个例子中，我们假设设备类型参数是一个符号，例如`disk`或`tape`——所以这些方法必须是专门处理这些符号的单独方法。
 
-+ `make-device-stream` *device-type class name*<br>创建并返回一个流； 其主要目的是为设备类的 `make-instance` 提供正确的参数。 这个泛型函数旨在为每个设备类型专门化，`device-type` 是一个符号，例如`tape`或`disk`，`name` 是一个字符串：对于磁盘设备，它命名一个路径名； 对于磁带设备，它命名一个单元号。
++ `make-device-stream` *device-type class name*<br>创建并返回一个流； 其主要目的是为设备类的 `make-instance` 提供正确的参数。 这个泛型函数旨在为每个设备类型特化，`device-type` 是一个符号，例如`tape`或`disk`，`name` 是一个字符串：对于磁盘设备，它命名一个路径名； 对于磁带设备，它命名一个单元号。
 
 总之，将新流挂钩到流创建机制的协议包括两个任务：
  
@@ -1265,6 +1265,6 @@ Common Lisp 指定字符流支持 `read-char` 和 `write-char` 函数。 （Comm
 
 文档化实现的任务是一项挑战，因为它要求您了解实现的哪些方面是内部的，哪些方面是外部的。 我们推荐一种保守的方法，即在严格的“需要知道”的基础上用文档来记录实现。 也就是说，只记录外部程序员为了扩展程序而必须理解的那些实现部分。（内部文档对维护人员很有用；然而，这与为其他程序员编写实现文档以供扩展是不同的问题。）
 
-记录流类的存在和组织是很重要的。程序员需要知道为内部和外部协议中的泛型函数定义了哪些方法，这些方法附加到哪些类中，以及这些方法的作用。但是，我们可以省略这些方法如何工作的细节。有些方法根本不需要记录。例如，`wait-for-disk`的方法纯粹是磁盘流的内部方法。想要扩展流以处理其他设备或元素类型的程序员并不需要调用`wait-for-disk`，专门化它，甚至不需要知道它的存在。另一方面，如果我们想让程序员扩展磁盘流，我们确实需要为`wait-for-disk`提供文档。
+记录流类的存在和组织是很重要的。程序员需要知道为内部和外部协议中的泛型函数定义了哪些方法，这些方法附加到哪些类中，以及这些方法的作用。但是，我们可以省略这些方法如何工作的细节。有些方法根本不需要记录。例如，`wait-for-disk`的方法纯粹是磁盘流的内部方法。想要扩展流以处理其他设备或元素类型的程序员并不需要调用`wait-for-disk`，特化它，甚至不需要知道它的存在。另一方面，如果我们想让程序员扩展磁盘流，我们确实需要为`wait-for-disk`提供文档。
 
 我们可能会选择不公开类的槽，而倾向于文档化访问它们的方法。例如，记录`stream-state`和`(setf stream-state)`的方法可以为程序员提供足够的信息，以便查询流的状态并更改该状态。不需要公开它们是槽的读取器和写入器方法这一事实。

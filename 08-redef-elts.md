@@ -88,7 +88,7 @@ CLOS使您能够指定在更新实例以符合类的新定义时要采取的其�
 
 `defgeneric`可以通过包含`:method`选项来定义方法。`defgeneric`的`:method`选项与使用`defmethod`为该泛型函数定义方法的效果相同。有时，在`defgeneric`表达式中定义方法本身是有用的，特别是对于默认方法。这是一种突出显示默认行为的方法。有关使用该语法的示例，请参见[定义定向流]()，第180页。
 
-如果重新定义泛型函数，并且新的`defgeneric`表达式使用`:method`选项，可能会发生两件事。如果该方法已经存在(具有相同的专门化参数和相同的限定符的相同泛型函数的方法)，则它将被`:method`选项中定义的方法替换。如果该方法还不存在，则创建它。重新定义泛型函数可能会向泛型函数添加方法，也可能会替换方法，但它永远不会删除已有的方法:如果以前的`defgeneric`用`:method`选项定义了一个方法，但当前的`defgeneric`没有定义该方法，该方法对象继续存在于 Lisp 中。
+如果重新定义泛型函数，并且新的`defgeneric`表达式使用`:method`选项，可能会发生两件事。如果该方法已经存在(具有相同的特化参数和相同的限定符的相同泛型函数的方法)，则它将被`:method`选项中定义的方法替换。如果该方法还不存在，则创建它。重新定义泛型函数可能会向泛型函数添加方法，也可能会替换方法，但它永远不会删除已有的方法:如果以前的`defgeneric`用`:method`选项定义了一个方法，但当前的`defgeneric`没有定义该方法，该方法对象继续存在于 Lisp 中。
 
 您不能使用`defgeneric`来重新定义普通的 Lisp 函数、宏或特殊形式。如果对`defgeneric`表达式求值，并且第一个参数是普通函数、宏或特殊形式的名字，则会发出错误信号。相反，您可以使用`defun`来重新定义泛型函数。如果你定义了与现有泛型函数同名的普通 Lisp 函数、宏或特殊形式，则该名字不再与泛型函数关联。
 
@@ -341,6 +341,6 @@ CLOS允许你指定在更新实例以符合不同类的定义时要采取的其�
 
 当您调用`change-class`时，CLOS更新实例中的结构，然后调用泛型函数`update-instance-for-different-class`。默认的 primary 方法根据目标类的`:initform`初始化所有新增的本地槽。
 
-请注意，如果为`update-instance-for-different-class`定义了一个 primary 方法，它将覆盖默认的方法，该方法初始化新的本地槽。在大多数情况下，最好是让这种行为发生，并通过编写 before 方法或 after 方法来专门化不同类的`update-instance-for-different-class`。如果在 before 方法中初始化了槽，默认的 primary 方法就不会再用它的`:initform`填充槽。
+请注意，如果为`update-instance-for-different-class`定义了一个 primary 方法，它将覆盖默认的方法，该方法初始化新的本地槽。在大多数情况下，最好是让这种行为发生，并通过编写 before 方法或 after 方法来特化不同类的`update-instance-for-different-class`。如果在 before 方法中初始化了槽，默认的 primary 方法就不会再用它的`:initform`填充槽。
 
 当CLOS调用`update-instance-for-different-class`时，第一个参数`previous`是实例更新前的副本。第二个参数`target`是更新后的实例。`target`和`previous`参数并不`eq`。你可以通过访问器或`slot-value`来访问`previous`实例中所有槽的值;您还可以在`previous`参数上使用其他函数或泛型函数。

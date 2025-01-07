@@ -1,6 +1,6 @@
 # 10 过程定义：初始化
 
-在本章中，我们将讨论设计高级任务的“过程定义”的技术； 这需要将任务分解为单独的泛型函数，每个函数负责明确定义的任务部分。通常，泛型函数有默认行为。程序员使用这些泛型函数作为入口； 他们可以通过专门化一种或多种泛型函数来控制部分任务。
+在本章中，我们将讨论设计高级任务的“过程定义”的技术； 这需要将任务分解为单独的泛型函数，每个函数负责明确定义的任务部分。通常，泛型函数有默认行为。程序员使用这些泛型函数作为入口； 他们可以通过特化一种或多种泛型函数来控制部分任务。
 
 有些程序有几个相关的任务。任务的程序定义可以重叠，以共享代码。可以定义两个或三个任务来调用单个泛型函数。这种技术可以引出模块化程序； 它需要精心的设计，共享的工作得以共享，而单独的工作得以分开。我们详细研究一个例子：初始化的CLOS过程定义。
 
@@ -13,9 +13,9 @@
 
 稍后，在第207页[创建流的过程定义]()中，我们设计了一个过程定义，用于选择要创建的正确流类，并通过为 `make-instance` 提供适当的参数来创建流。
 
-CLOS本身使用程序定义技术。我们已经看到 `make-instance` 有一个过程定义：它总是调用 `initialize-instance`。类重定义是另一个例子； 它总是调用 `update-instance-for-redefined-class`。同样，`change-class` 总是调用 `update-instance-for-different-class`。泛型函数 `initialize-instance`、`update-instance-for-redefined-class` 和 `update-instance-for-different-class` 被有意定义为入口点——可以用方法专门化的泛型函数。
+CLOS本身使用程序定义技术。我们已经看到 `make-instance` 有一个过程定义：它总是调用 `initialize-instance`。类重定义是另一个例子； 它总是调用 `update-instance-for-redefined-class`。同样，`change-class` 总是调用 `update-instance-for-different-class`。泛型函数 `initialize-instance`、`update-instance-for-redefined-class` 和 `update-instance-for-different-class` 被有意定义为入口点——可以用方法特化的泛型函数。
 
-某些错误情况也有过程定义：遇到错误时调用的泛型函数。默认方法发出错误信号，但您可以专门化泛型函数来执行不同的操作。泛型函数包括以下内容：
+某些错误情况也有过程定义：遇到错误时调用的泛型函数。默认方法发出错误信号，但您可以特化泛型函数来执行不同的操作。泛型函数包括以下内容：
 
 `slot-unbound`: 当尝试读取未绑定的槽时调用
 
@@ -68,9 +68,9 @@ initargs 在所有初始化任务中都很有用，因此这是另一项可以�
 
 用户可以直接提供initargs给`make-instance`； 这些initargs被传递给 `initialize-instance`，然后被传递给 `shared-initialize`。但是，当重新定义类或更改实例的类时，用户不能提供 initargs。那么initargs在这些更新过程中有何用处呢？ 您可以为 `update-instance-for-redefined-class` 或 `update-instance-for-different-class` 定义 around 方法。around 方法计算initargs并将它们传递给 `call-next-method` 的调用； 使用这些initargs调用默认方法，并将它们传递给 `shared-initialize`。因此，around 方法是允许更新函数使用initargs的入口点。
 
-## 10.5 专门化程序的一部分
+## 10.5 特化程序的一部分
 
-程序定义使用户能够将程序的一个或多个方面作为一个整体进行专门化。初始化方案认识到某些工作只适用于一项任务（例如类重新定义），而其他工作则适用于所有初始化任务。过程定义将四个初始化任务彼此分开，并通过调用 `shared-initialize` 将它们组合起来。
+程序定义使用户能够将程序的一个或多个方面作为一个整体进行特化。初始化方案认识到某些工作只适用于一项任务（例如类重新定义），而其他工作则适用于所有初始化任务。过程定义将四个初始化任务彼此分开，并通过调用 `shared-initialize` 将它们组合起来。
 
 | Specializing this Generic Function  | 效果                                         |
 |-------------------------------------|-------------------------------------------- |
@@ -80,7 +80,7 @@ initargs 在所有初始化任务中都很有用，因此这是另一项可以�
 | update-instance-for-different-class | 改变类                                       |
 | shared-initialize                   | 创建实例<br>重新初始化实例<br>重新定义类<br>改变类 |
 
-五个初始化函数中的每一个都有一个默认的primary 方法。例如，`update-instance-for-different-class` 的默认方法使用适当的参数调用 `initialize-instance`。反过来，`initialize-instance` 的默认方法根据其参数根据initargs和 initforms 执行初始化。通常，程序员通过提供 after 方法而不是 primary 方法来专门化这些泛型函数。
+五个初始化函数中的每一个都有一个默认的primary 方法。例如，`update-instance-for-different-class` 的默认方法使用适当的参数调用 `initialize-instance`。反过来，`initialize-instance` 的默认方法根据其参数根据initargs和 initforms 执行初始化。通常，程序员通过提供 after 方法而不是 primary 方法来特化这些泛型函数。
 
 ## 10.6 将initarg名字声明为有效
 
