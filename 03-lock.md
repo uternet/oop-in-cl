@@ -419,17 +419,17 @@ The default for failure-mode is :no-error."))
 
 `without-process-preemption` &body *body*
 
-这个特殊形式的 body 运行时没有进程被调度器抢占的风险。换句话说，就进程调度而言， body 是一个原子操作。
+这种特殊形式的主体运行时，不会受到调度器抢占进程的风险。换句话说，该主体在进程调度方面是一个原子操作。
 
 `process-wait` *reason function &rest arguments*
 
-这个函数是等待的原语。当前的进程将进入等待，一直到将 `function` 应用到`arguments`返回非`nil`值。此时`process-wait`返回将 `function` 应用到 `arguments` 的值。参数`reason`是一个描述等待原因的字符串。
+该函数是等待的底层原语。当前进程会一直等待，直到将函数应用于参数后返回非 `nil` 值。此时，`process-wait` 会返回将函数应用于参数的结果值。参数 `reason` 是一个字符串，用于描述等待的原因。
 
 `*current-process*`
 
 这个变量的值是当前执行进程的标识符。
 
-现在我们定义`setf-if`宏，我们将在 `seize` 和 `release` 方法中使用到它。`setf-if` 宏将广义变量的值与期望值进行比较。如果这两个值相同，`setf-if` 将变量的值设置为一个新值并返回`t`;否则，它不会改变值并返回`nil`。`setf-if` 使用 `without-process-preemption` 来确保操作是自动发生的，以确保在 `setf-if` 测试变量和更改变量的同时，其他进程不能更改变量。
+现在我们来定义`setf-if`宏，我们将在 `seize` 和 `release` 方法中用到它。`setf-if` 宏将广义变量的值与期望值进行比较。如果这两个值相同，`setf-if` 会将变量的值设置为一个新值并返回`t`;否则，它不会改变值并返回`nil`。`setf-if` 使用 `without-process-preemption` 来确保操作是自动发生的，以确保在 `setf-if` 测试变量和更改变量的同时，其他进程不能更改变量。
 
 ```lisp
 ;; If value of place is old-value, set it to new-value
@@ -453,7 +453,7 @@ The default for failure-mode is :no-error."))
     (error "Can't seize ~A because you already own it." l)))
 ```
 
-下面的 `seize` 方法使用了 `do` 迭代，直到 `setf-if` 成功。在每一次迭代中，`setf-if` 通过使用 `lock-owner` 来确定锁的 `owner` 槽是否为 `nil` 来确定锁是否是空闲的。如果锁是空闲的，`setf-if` 将其所有者设置为当前进程，从而捕获它。(这是由`setf-if`自动完成的。)如果锁第一次没有释放，则调用`process-wait`来等待，直到 `lock-owner` 返回`nil`，这表示锁当前是空闲的。然后`setf-if`表达式再次尝试。
+下面的 `seize` 方法使用 `do` 进行迭代，直到 `setf-if` 成功。在每一次迭代中，`setf-if` 通过使用 `lock-owner` 来确定锁的 `owner` 槽是否为 `nil` 来确定锁是否是空闲的。如果锁是空闲的，`setf-if` 将其所有者设置为当前进程，从而捕获它。(这是由`setf-if`自动完成的。)如果锁第一次没有释放，则调用`process-wait`来等待，直到 `lock-owner` 返回`nil`，这表示锁当前是空闲的。然后`setf-if`表达式再次尝试。
 
 ```lisp
 (defmethod seize ((l simple-lock))
@@ -484,7 +484,7 @@ The default for failure-mode is :no-error."))
 
 ## 3.6 特化锁的行为
 
-至此，我们已经完成了应用程序锁的需求。定义了接口，完成了实现。在本节中，我们将通过特化锁的打印表示和描述来进行最后的修改。我们将描述系统提供的用于打印和描述一个对象的默认方法，并讨论为什么提供一个方法来覆盖默认行为是很有用的。我们还将展示方法如何具有不同的角色并协同工作。
+至此，我们已经完成了锁应用程序的需求。定义了接口，完成了实现。在本节中，我们将通过特化锁的打印表示和描述来进行最后的修改。我们将描述系统提供的用于打印和描述一个对象的默认方法，并讨论为什么提供一个方法来覆盖默认行为是很有用的。我们还将展示方法如何具有不同的角色并协同工作。
 
 ### 控制锁的打印表示
 
