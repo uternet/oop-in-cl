@@ -1,10 +1,10 @@
 # 11 开发一个高级CLOS程序：流
 
-本章说明了实现 Common Lisp 流的面向对象的基础，其行为 定义在 Steele 的 Common LISP: The Language 中。流天然地适合面向对象的模型。许多相互关联的不同种类的流可以用多重继承来建模。
+本章说明了实现 COMMON LISP 流的面向对象的基础，其行为 定义在 Steele 的 Common LISP: The Language 中。流天然地适合面向对象的模型。许多相互关联的不同种类的流可以用多重继承来建模。
 
 这个例子比本书中的其他例子更具挑战性。我们的目标是演示使用CLOS技术将问题分解为可管理的模块来解决大型的问题。流基础的设计指定了每个模块的职责。实现由模块本身组成，它们是类、泛型函数和方法。设计是具有挑战性的部分——但如果做得好，实现就相对简单。（您会注意到其中一个模块（磁盘流）的实现实际上非常复杂，但复杂性是由于磁盘设备本身的处理，无论流的设计如何，这都是必要的。）
 
-我们首先总结什么是 Common Lisp 流，以及它们是如何创建和使用的。然后我们描述我们的整体设计并展示说明CLOS和面向对象风格的实现部分。这个例子开发了流的基础，并说明了如何编写一些熟悉的 Common Lisp 流函数来使用该基础。例如，我们展示了如何使用此基础编写 `read-char`、`write-char`、`read-byte` 和 `write-byte`，但我们省略了其他函数的定义，例如 `read-line` 和 `write-line`。
+我们首先总结什么是 COMMON LISP 流，以及它们是如何创建和使用的。然后我们描述我们的整体设计并展示说明CLOS和面向对象风格的实现部分。这个例子开发了流的基础，并说明了如何编写一些熟悉的 COMMON LISP 流函数来使用该基础。例如，我们展示了如何使用此基础编写 `read-char`、`write-char`、`read-byte` 和 `write-byte`，但我们省略了其他函数的定义，例如 `read-line` 和 `write-line`。
 
 外部接口由 Common LISP: The Language 指定，在以下章节中：
 
@@ -23,7 +23,7 @@
 
 设计和开发面向对象程序的第一步是了解您要解决的问题。 我们首先描述我们需要建模的所有对象类型以及对对象的操作。 有了这些信息，我们将能够设计一个班级组织。
 
-Common Lisp 流用于将数据从源传输到目标。 例如，当您使用文本编辑器时，您使用编辑器命令将缓冲区的内容保存到文件中，就会使用流来传输数据。
+COMMON LISP 流用于将数据从源传输到目标。 例如，当您使用文本编辑器时，您使用编辑器命令将缓冲区的内容保存到文件中，就会使用流来传输数据。
 
 ### 流的种类
 
@@ -109,7 +109,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 ### 流的外部协议
 
-流的外部协议在 Common LISP: The Language 中指定。在这个例子中，我们实现了以下 Common Lisp 流操作的子集:
+流的外部协议在 Common LISP: The Language 中指定。在这个例子中，我们实现了以下 COMMON LISP 流操作的子集:
 
 | 流类型 | 操作 |
 | --------------- | ------------------- |
@@ -153,7 +153,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 ## 11.3 使用流的示例进行实验
 
-如果您打算尝试这个示例中的代码，请记住，我们重新定义了几个重要的 Common Lisp 函数，这些函数在流上操作。您可以为测试此示例定义一个包，并指定应该隐藏某些 Common Lisp 符号。这使您能够保留之前的流函数定义，这是保持 Lisp 可用所必需的。(如果 Common Lisp 指定流函数是泛型的，就不需要对现有的定义进行阴影处理;您可以简单地向现有的泛型函数添加方法。)
+如果您打算尝试这个示例中的代码，请记住，我们重新定义了几个重要的 COMMON LISP 函数，这些函数在流上操作。您可以为测试此示例定义一个包，并指定应该隐藏某些 COMMON LISP 符号。这使您能够保留之前的流函数定义，这是保持 Lisp 可用所必需的。(如果 COMMON LISP 指定流函数是泛型的，就不需要对现有的定义进行阴影处理;您可以简单地向现有的泛型函数添加方法。)
 
 ```lisp
 
@@ -175,7 +175,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
           'clos-streams)
 ```
 
-您将注意到，我们通过几个`defgeneric`表达式声明泛型函数的返回值。这是记录泛型函数的部分契约(预期返回值)的一种方便的方法。尽管 Common Lisp 没有将`values`指定为可识别的声明说明符，但我们可以通过如下方式将`values`声明为一个说明符:
+您将注意到，我们通过几个`defgeneric`表达式声明泛型函数的返回值。这是记录泛型函数的部分契约(预期返回值)的一种方便的方法。尽管 COMMON LISP 没有将`values`指定为可识别的声明说明符，但我们可以通过如下方式将`values`声明为一个说明符:
 
     (proclaim '(declaration values))
     
@@ -360,7 +360,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 + `bidirectional-stream`类从它的超类`input-stream`,`output-stream`,`stream`继承了所有方法。`input-stream`提供的`input-stream-p`方法覆盖了由`stream`提供的默认方法，因此，一个`bidirectional-stream`流也被定义为输入流。与此类似，`bidirectional-stream`也被定义为输出流。
 
-有时不可能将函数实现为泛型函数。 例如，Common Lisp 指定 `force-output` 的参数`stream`是可选的。 在 CLOS 中，方法不能特化可选参数。 由于我们想要选择方法的`stream`参数，我们将 `force-output` 定义为一个普通函数，它处理它的参数，然后调用 `force-output-internal` 来完成它的工作。 我们将 `force-output-internal` 定义为需要流参数的泛型函数。 我们对`finish-output`做同样的事情。
+有时不可能将函数实现为泛型函数。 例如，COMMON LISP 指定 `force-output` 的参数`stream`是可选的。 在 CLOS 中，方法不能特化可选参数。 由于我们想要选择方法的`stream`参数，我们将 `force-output` 定义为一个普通函数，它处理它的参数，然后调用 `force-output-internal` 来完成它的工作。 我们将 `force-output-internal` 定义为需要流参数的泛型函数。 我们对`finish-output`做同样的事情。
 
 我们将 `ensure-open-stream` 和 `make-element-array` 实现为普通的 Lisp 函数。 我们预计不同类型的流不需要针对这些操作的特殊行为。 流协议可以按照普通函数和泛型函数来实现。
 
@@ -539,7 +539,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 + `disk-finished-p` *identifier*<br>如果操作完成，则返回 `t`。 如果 *wait* 为 `nil`，则标识符是 `disk-read` 或 `disk-write` 返回的值。
 
-磁盘流比磁带流复杂得多。 磁盘写入原语支持关键字参数`wait`，我们将使用它来区分`force-output`和`finish-output`。 Common Lisp 指定`force-output`应该开始写入缓冲数据，但不应该等待写入完成。 相反，`finish-output` 写入缓冲的数据并一直等到写入完成。 这种区别意味着磁盘流具有一些异步活动，我们需要牢记那些在继续之前需要检查磁盘写入操作是否正在进行的情况。 
+磁盘流比磁带流复杂得多。 磁盘写入原语支持关键字参数`wait`，我们将使用它来区分`force-output`和`finish-output`。 COMMON LISP 指定`force-output`应该开始写入缓冲数据，但不应该等待写入完成。 相反，`finish-output` 写入缓冲的数据并一直等到写入完成。 这种区别意味着磁盘流具有一些异步活动，我们需要牢记那些在继续之前需要检查磁盘写入操作是否正在进行的情况。 
 
 ### 定义磁盘流
 
@@ -900,7 +900,7 @@ COMMON LISP 定义了定向流的概念; 谓词`input-stream-p`，`output-stream
 
 字符流类假定每个字符都适合单个字节。 一些实现支持需要多于一个字节存储的字符。 我们的模型可以扩展到包括基于字符流的类； 这样的类可以提供一个名为 `bytes-per-element` 的类槽来覆盖由`character-stream`类定义的类槽。
 
-Common Lisp 指定字符流支持 `read-char` 和 `write-char` 函数。 （Common Lisp 还指定了其他几个操作字符流的函数，但这个例子并没有将它们全都实现。）我们的流基础的真正好处在这里变得很明显：用术语定义 `read-char` 和 `write-char` 非常容易 读取下一个元素和写入下一个元素。 正如我们将在字节流中演示的那样，使用相同的基础实现字节输入和输出功能同样容易。
+COMMON LISP 指定字符流支持 `read-char` 和 `write-char` 函数。 （COMMON LISP 还指定了其他几个操作字符流的函数，但这个例子并没有将它们全都实现。）我们的流基础的真正好处在这里变得很明显：用术语定义 `read-char` 和 `write-char` 非常容易 读取下一个元素和写入下一个元素。 正如我们将在字节流中演示的那样，使用相同的基础实现字节输入和输出功能同样容易。
 
 我们定义 `character-input-stream`、`character-output-stream`和`character-bidirectional-stream`来填充类型组织。 这些类都不提供自己的方法或槽。 然而，通过定义这些类，我们使客户端能够使用 `typep` 来确定对象是否属于这些流类型之一。
 
@@ -1087,7 +1087,7 @@ Common Lisp 指定字符流支持 `read-char` 和 `write-char` 函数。 （Comm
 
 ## 11.10 用于创建流的过程定义
 
-至此，我们已经完成了流的基础，并且已经实现了几个熟悉的 Common Lisp 流函数。 然而，我们忽略了流是如何创建的问题。 我们需要定义一个接口来创建流。 由于我们的目标之一是使流易于扩展，因此我们应该将此接口设计为可扩展协议并将它文档化； 该协议使程序员能够将新的流类挂钩到现有机制中并使新类普遍可用。
+至此，我们已经完成了流的基础，并且已经实现了几个熟悉的 COMMON LISP 流函数。 然而，我们忽略了流是如何创建的问题。 我们需要定义一个接口来创建流。 由于我们的目标之一是使流易于扩展，因此我们应该将此接口设计为可扩展协议并将它文档化； 该协议使程序员能够将新的流类挂钩到现有机制中并使新类普遍可用。
 
 ### 为创建流定义一个协议
 
