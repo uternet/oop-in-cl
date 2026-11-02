@@ -949,7 +949,7 @@ If valid, does nothing and allows primary method to run."
       (release lock :no-error))))
 ```
 
-`dequeue-print-request`函数将请求作为参数，而不是简单地从列表中弹出第一个请求。这允许调用者和后台打印程序选择首先打印哪个请求。
+`dequeue-print-request`函数将请求作为参数，而不是简单地从列表中弹出第一个请求。这允许调用者-后台打印程序-选择首先打印哪个请求。
 
 ```lisp
 (defun dequeue-print-request (r)
@@ -966,7 +966,7 @@ If valid, does nothing and allows primary method to run."
 
 ### 支持锁的典型应用：with-lock
 
-当我们退一步看第一个客户端程序时，我们看到`enqueue-print-request`和`dequeue-print-request`都演示了锁的规范用法：首先抓住锁，然后执行操作，然后释放锁。
+当我们退一步看第一个客户端程序时，我们看到`enqueue-print-request`和`dequeue-print-request`都演示了锁的规范用法：首先获取锁，然后执行操作，然后释放锁。
 
 我们可以写一个宏`with-lock`添加到应用当中，让锁的使用更加方便：
 
@@ -995,9 +995,9 @@ If valid, does nothing and allows primary method to run."
 
 ### 专门化描述打印队列的方法
 
-为客户端程序专门化`print-request-queue`类的`describe`是一种很好的方式。请注意，此方法在描述打印请求队列之前不会捕获该队列。这意味着，如果队列具有一个 owner，则该进程当前可能正在修改队列，因此待处理的打印请求队列可能正在被更改。
+为客户端程序专门化`print-request-queue`类的`describe`是一种良好的风格。请注意，此方法在描述打印请求队列之前不会获取该队列的锁。这意味着，如果队列具有一个 owner，则该进程当前可能正在修改队列，因此待处理的打印请求队列可能会发生变化。
 
-不捕获队列的原因是，我们认为 `describe` 显示锁的所有者是否忙比等到队列空闲时更有价值。如果我们等待队列变为空闲，那么当一个进程在捕获锁的同时在等待的情况下，将无法使用 `describe` 进行调试，因为 `describe` 也在等待。
+不获取队列的原因是，我们认为让 `describe` 显示一个繁忙的锁的所有者比等到队列变为空闲更有价值。如果我们等待队列变为空闲，那么当一个进程在拥有锁的同时在等待的情况下，将无法使用 `describe` 进行调试，因为 `describe` 也在等待。
 
 ```lisp
 (defmethod describe ((queue print-request-queue))
@@ -1028,17 +1028,17 @@ If valid, does nothing and allows primary method to run."
 
 | Class              | Describe      |
 | ---                | ---           |
-| lock	             | 所有锁的基础    |
-| ordered-lock-mixin | 有序锁的组成部分 |
-| simple-lock        | 具有 busy 和 free 两个状态. <br>当它 busy 时，它保存它的拥有者。<br>构造函数是 `make-simple-lock` |
-| null-lock          | 总是空闲的，它遵守锁协议，不捕获任何东西。<br>构造函数是 `make-null-lock` |
-| ordered-lock       | 具有 busy 和 free 两个状态的有序锁。<br>构造函数是 `make-ordered-lock` |
-| ordered-null-lock  | 支持有序锁的空锁，它总是 free 状态，不捕获任何东西。<br>
+| `lock`	             | 所有锁的基础    |
+| `ordered-lock-mixin` | 有序锁的组成部分 |
+| `simple-lock`        | 具有 busy 和 free 两个状态. <br>当它 busy 时，它保存它的拥有者。<br>构造函数是 `make-simple-lock` |
+| `null-lock`          | 总是空闲的，它遵守锁协议，不捕获任何东西。<br>构造函数是 `make-null-lock` |
+| `ordered-lock`       | 具有 busy 和 free 两个状态的有序锁。<br>构造函数是 `make-ordered-lock` |
+| `ordered-null-lock`  | 支持有序锁的空锁，它总是 free 状态，不捕获任何东西。<br>
                        构造函数是 `make-ordered-null-lock` |
 
 ### 每一个类的贡献是什么
 
-类可以贡献槽和方法。此外，槽选项也是可继承的；也就是说，它们可以影响到它们的子类。例如，槽选项：`:initarg`和`:initform`由子类继承。如果类提供了访问器方法，那么它们也适用于子类。这里我们集中讨论支持锁协议的槽和方法。我们首先列出每个类提供的槽： 
+类可以贡献槽和方法。此外，槽选项也是可继承的；也就是说，它们可以影响到它们的子类。例如，槽选项：`:initarg`和`:initform`被子类继承。如果一个类提供了访问器方法，那么它们也适用于子类。这里我们专注于支持锁协议的槽和方法。我们从列出每个类提供的槽开始： 
 
 | Class              | slot  |
 | ---                | ---   |
