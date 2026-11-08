@@ -123,11 +123,11 @@
 
 `simple-lock`类从`lock`类继承了与`null-lock`完全相同的特征和行为。请注意，`simple-lock` 类从它的超类继承了`name`槽，并添加了自己的槽，即`owner`槽。`simple-lock`的定义还包括两个新的槽选项:
 
-> `:initform nil`
+- `:initform nil` 
 
-这个槽选项允许您为槽提供一个默认的初始值。这里的`owner` 槽的默认初始值为 `nil`。这意味着，当创建一个 `simple-lock` 对象时，它默认是空闲的。
+个槽选项允许您为槽提供一个默认的初始值。这里的`owner` 槽的默认初始值为 `nil`。这意味着，当创建一个 `simple-lock` 对象时，它默认是空闲的。
 
-> `:accessor lock-owner`
+- `:accessor lock-owner` 
 
 这个槽选项使您能够访问`owner`槽，以便读取或写入槽值。CLOS会生成两个泛型函数：一个名为`lock-owner`的读取器泛型函数，以及对应的写入器泛型函数。CLOS还会为每个泛型函数定义相应的方法。因此，您可以通过读取器泛型函数`lock-owner`来读取槽值，也可以通过`setf`结合`lock-owner`来写入槽值。
 
