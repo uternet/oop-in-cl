@@ -889,7 +889,7 @@ If valid, does nothing and allows primary method to run."
              l highest-lock))))
 ```
 
-当一个进程捕获了一个有序的锁后，需要更新`*process-lock-table*`来将这个锁与进程关联起来。我们用一个 after 方法来完成这个更新:
+当一个进程获取了一个有序的锁后，需要更新`*process-lock-table*`来将这个锁与进程关联起来。我们用一个 after 方法来完成这个更新:
 
 ```lisp
 (defmethod seize :after ((l ordered-lock-mixin))
@@ -1033,9 +1033,9 @@ If valid, does nothing and allows primary method to run."
 | lock	             | 所有锁的基础    |
 | ordered-lock-mixin | 有序锁的组成部分 |
 | simple-lock        | 具有 busy 和 free 两个状态. <br>当它 busy 时，它保存它的拥有者。<br>构造函数是 `make-simple-lock` |
-| null-lock          | 总是空闲的，它遵守锁协议，不捕获任何东西。<br>构造函数是 `make-null-lock` |
+| null-lock          | 总是空闲的，它遵守锁协议，不获取任何东西。<br>构造函数是 `make-null-lock` |
 | ordered-lock       | 具有 busy 和 free 两个状态的有序锁。<br>构造函数是 `make-ordered-lock` |
-| ordered-null-lock  | 支持有序锁的空锁，它总是 free 状态，不捕获任何东西。<br>
+| ordered-null-lock  | 支持有序锁的空锁，它总是 free 状态，不获取任何东西。<br>
                        构造函数是 `make-ordered-null-lock` |
 
 ### 每一个类的贡献是什么
@@ -1111,7 +1111,7 @@ If valid, does nothing and allows primary method to run."
 
 在`ordered-lock`的实例上调用`seize`时，将调用以下方法：
 
-1. `ordered-lock-mixin` 提供的 `before` 方法，用于是否允许此进程捕获该 `ordered-lock`
+1. `ordered-lock-mixin` 提供的 `before` 方法，用于是否允许此进程获取该 `ordered-lock`
 2. `simple-lock` 提供的 primary 方法，将进程标识符存储在 `owner` 槽中
 3. `ordered-lock-mixin` 提供的 `after` 方法，它更新`*process-lock-table*`以注意此进程现在拥有此 `ordered-lock`
 
