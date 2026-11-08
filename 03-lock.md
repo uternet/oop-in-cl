@@ -85,13 +85,21 @@
 
 - `()` 直接超类的列表，这里的列表是空的，因为我们没有为 lock 指定任何超类
 
-- `((name :initarg :name :reader lock-name))` 槽指示符的列表。**每个槽指示符可以是一个符号(槽名)或者是一个列表(槽名后跟着槽选项)**。这里我们定义了一个名为 `name` 的槽，有两个槽选项:
+- `((name :initarg :name :reader lock-name))` 
 
-- `:initarg :name`	这个选项使得在创建实例时可以初始化这个槽的值。要初始化 `name` 槽，可以给`make-instance`指定`:name`关键字参数。(注意，`make-instance`是CLOS函数，用于创建新实例;我们将在[使用make-instance或构造函数](#33-创建新对象实例)中进行讨论。)
+槽指示符的列表。**每个槽指示符可以是一个符号(槽名)或者是一个列表(槽名后跟着槽选项)**。这里我们定义了一个名为 `name` 的槽，有两个槽选项:
 
-- `:reader lock-name` 这个选项允许使用泛型函数 `lock-name` 来读取这个槽的值。这个槽选项导致CLOS系统为 `lock-name` 自动生成了一个方法，`lock-name` 被称为读取器泛型函数。
+- `:initarg :name`	
 
-- `(:documentation "The foundation of all locks.")`  这是一个类选项；它关乎整个类。`:documentation` 类选项提供了一个描述类用途的文档字符串。您可以通过调用文档函数来检索类的文档字符串。
+这个选项使得在创建实例时可以初始化这个槽的值。要初始化 `name` 槽，可以给`make-instance`指定`:name`关键字参数。(注意，`make-instance`是CLOS函数，用于创建新实例;我们将在[使用make-instance或构造函数](#33-创建新对象实例)中进行讨论。)
+
+- `:reader lock-name` 
+
+这个选项允许使用泛型函数 `lock-name` 来读取这个槽的值。这个槽选项导致CLOS系统为 `lock-name` 自动生成了一个方法，`lock-name` 被称为读取器泛型函数。
+
+- `(:documentation "The foundation of all locks.")`  
+
+这是一个类选项；它关乎整个类。`:documentation` 类选项提供了一个描述类用途的文档字符串。您可以通过调用文档函数来检索类的文档字符串。
 
 ### 从超类继承
 
